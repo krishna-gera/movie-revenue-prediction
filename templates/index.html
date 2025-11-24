@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Movie Revenue Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="hero">
+            <h1>🎬 Advanced Movie Revenue Predictor</h1>
+            <p class="subtitle">AI-Powered Box Office Forecasting with 20+ Parameters</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number">20+</span>
+                    <span class="stat-label">Parameters</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-label">Accuracy</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">ML</span>
+                    <span class="stat-label">Powered</span>
+                </div>
+            </div>
+        </header>
+
+        <form id="predictionForm">
+            <!-- Core Production Features -->
+            <div class="section">
+                <h2 class="section-title">🎬 Core Production Features</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="budget">💰 Production Budget ($)</label>
+                        <input type="number" id="budget" name="budget" value="50000000" required>
+                        <small>Typical: $50M - $200M</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="runtime">⏱️ Runtime (minutes)</label>
+                        <input type="number" id="runtime" name="runtime" value="120" required>
+                        <small>Average: 90-150 minutes</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="genre">🎭 Primary Genre</label>
+                        <select id="genre" name="genre" required>
+                            {% for genre in genres %}
+                            <option value="{{ genre }}" {% if genre == 'Action' %}selected{% endif %}>
+                                {{ genre }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mpaa_rating">🔞 MPAA Rating</label>
+                        <select id="mpaa_rating" name="mpaa_rating" required>
+                            {% for rating in mpaa_ratings %}
+                            <option value="{{ rating }}" {% if rating == 'PG-13' %}selected{% endif %}>
+                                {{ rating }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="production_company">🎪 Production Studio</label>
+                        <select id="production_company" name="production_company" required>
+                            {% for studio in major_studios %}
+                            <option value="{{ studio }}">{{ studio }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="num_production_companies">🏢 Number of Production Companies</label>
+                        <input type="number" id="num_production_companies"
+                               name="num_production_companies" value="1" min="1" max="10" required>
+                        <small>How many studios involved?</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Star Power & Creative Team -->
+            <div class="section">
+                <h2 class="section-title">⭐ Star Power & Creative Team</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="has_top_star">🌟 Lead Actor is Forbes Top Celebrity?</label>
+                        <select id="has_top_star" name="has_top_star" required>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="has_ensemble_cast">🎭 Multiple Known Actors (Ensemble Cast)?</label>
+                        <select id="has_ensemble_cast" name="has_ensemble_cast" required>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="director">🎥 Director</label>
+                        <select id="director" name="director" required>
+                            {% for director in known_directors %}
+                            <option value="{{ director }}">{{ director }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="writer">✍️ Writer</label>
+                        <select id="writer" name="writer" required>
+                            {% for writer in known_writers %}
+                            <option value="{{ writer }}">{{ writer }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketing & Distribution -->
+            <div class="section">
+                <h2 class="section-title">📢 Marketing & Distribution</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="release_month">📅 Release Month</label>
+                        <select id="release_month" name="release_month" required>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6" selected>June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                        <small id="seasonHint">Season: Summer Blockbuster</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="has_competition">🎯 Major Movies Releasing Same Weekend?</label>
+                        <select id="has_competition" name="has_competition" required>
+                            <option value="no" selected>No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="competitorGroup" style="display: none;">
+                        <label for="num_competitors">🔢 Number of Competing Releases</label>
+                        <input type="number" id="num_competitors" name="num_competitors"
+                               value="0" min="0" max="10">
+                        <small>How many major films?</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pre-Release Metrics -->
+            <div class="section">
+                <h2 class="section-title">📊 Pre-Release Metrics</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="trailer_views">📺 Trailer Views (YouTube)</label>
+                        <input type="number" id="trailer_views" name="trailer_views"
+                               value="1000000" required>
+                        <small>Total views across platforms</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expected_imdb">🌟 Expected IMDb Score (0-10)</label>
+                        <input type="number" id="expected_imdb" name="expected_imdb"
+                               value="7.0" step="0.1" min="0" max="10" required>
+                        <small>Based on test screenings</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Franchise & Source Material -->
+            <div class="section">
+                <h2 class="section-title">🎬 Franchise & Source Material</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="is_sequel">🔄 Is This a Sequel/Franchise Film?</label>
+                        <select id="is_sequel" name="is_sequel" required>
+                            <option value="no" selected>No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ip_source">📚 Based On</label>
+                        <select id="ip_source" name="ip_source" required>
+                            {% for source in ip_sources %}
+                            <option value="{{ source }}" {% if source == 'Original' %}selected{% endif %}>
+                                {{ source }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="previousRevenueGroup" style="display: none;">
+                        <label for="previous_revenue">🏆 Previous Film Revenue ($)</label>
+                        <input type="number" id="previous_revenue" name="previous_revenue" value="0">
+                        <small>Box office of last film</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Competition & Market -->
+            <div class="section">
+                <h2 class="section-title">🌍 International & Market</h2>
+                <div class="form-grid full-width">
+                    <div class="form-group">
+                        <label>🗣️ Release Languages (Select all that apply)</label>
+                        <div class="checkbox-grid">
+                            {% for lang in languages %}
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="languages" value="{{ lang }}"
+                                       {% if lang == 'English' %}checked{% endif %}>
+                                <span>{{ lang }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-predict">
+                <span class="btn-text">🎯 Predict Box Office Revenue</span>
+                <span class="loader" style="display: none;"></span>
+            </button>
+        </form>
+
+        <div id="results" class="results hidden">
+            <h2>📈 Prediction Results</h2>
+            <div class="prediction-card">
+                <div class="prediction-value">
+                    <span class="label">Predicted Box Office Revenue</span>
+                    <span id="predictionAmount" class="amount">$0</span>
+                    <span id="multiplierInfo" class="multiplier-info"></span>
+                </div>
+            </div>
+
+            <div class="impacts-section">
+                <h3>💡 Revenue Impact Breakdown</h3>
+                <div id="impactsList" class="impacts-list"></div>
+            </div>
+
+            <div class="chart-section">
+                <h3>📊 Visual Analysis</h3>
+                <img id="chartImage" src="" alt="Revenue Impact Chart" style="display: none;">
+            </div>
+
+            <button class="btn-reset" onclick="resetForm()">🔄 New Prediction</button>
+        </div>
+
+        <div id="error" class="error hidden"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
