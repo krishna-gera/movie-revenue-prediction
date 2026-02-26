@@ -225,7 +225,7 @@ def train_model(df):
 
     # Random Forest model
     model = RandomForestRegressor(
-        n_estimators=100,
+        n_estimators=20,
         max_depth=15,
         random_state=42,
         n_jobs=-1

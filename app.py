@@ -11,7 +11,8 @@ import numpy as np
 
 app = Flask(__name__)
 
-MODEL_FILE = 'movie_revenue_model.pkl'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_FILE = os.path.join(BASE_DIR, 'movie_revenue_model.pkl')
 model_data = None
 
 # Reference data for dropdowns
